@@ -1,8 +1,6 @@
 # 29 Hà Nội - Tháp Rùa Hồ Gươm GLB
 
-Project Python thuần để tạo file `.glb` cho **Tháp Rùa - Hồ Gươm, Hà Nội** theo cùng barem/cấu trúc với project mẫu `35-ninh-binh-nha-co-trang-an-glb`.
-
-Bản này là bản **nâng cấp có texture procedural + cây ven hồ chi tiết hơn + bảng tên tiếng Việt có dấu**: code tự dùng các ảnh PNG được sinh bằng Python để tạo bề mặt tường cũ, mái ngói, rêu, đá nứt, nước Hồ Gươm, cỏ đảo, cây xanh và bảng tên. Hàng cây/bụi cũ dạng khối hộp đã được thay bằng cây lộc vừng/banyan procedural: thân cong, cành chia nhánh, tán lá nhiều cụm không đều, lá highlight và một ít lá vàng-đỏ theo mùa. Bảng tên trước mô hình đã đổi thành **THÁP RÙA - HỒ GƯƠM**, đồng thời bệ/đáy được làm dày hơn để nhìn chắc khối. File output GLB nhúng texture trực tiếp vào GLB nên có thể mở độc lập.
+Project Python thuần để tạo file `.glb` cho **Tháp Rùa - Hồ Gươm, Hà Nội**
 
 Output hiện tại:
 
@@ -162,71 +160,3 @@ MATERIAL_TEXTURES = {
 ```
 
 File GLB gốc không có UV map, nên project tự tạo `TEXCOORD_0` bằng planar mapping theo hướng mặt. Đây là cách nâng cấp nhanh để bề mặt có vân, rêu, loang màu, gợn nước. Muốn giống ảnh chụp hơn nữa thì bước tiếp theo nên unwrap UV thủ công hoặc dùng ảnh texture thật đã được cấp quyền sử dụng.
-
-## Nâng Cấp Cây Ven Hồ
-
-Trong `src/glb_forge/trees.py`, hàng cây cũ được dựng lại bằng Python procedural:
-
-```text
-- thân cây cong nhẹ bằng nhiều nón cụt taper
-- rễ nổi nhỏ ở chân cây
-- cành chính chia hướng không đều
-- tán lá tạo từ nhiều ellipsoid méo/chồng lớp
-- lá rủ và lá highlight dạng oval mềm, không còn hình thoi vuông cạnh
-- bụi thấp ven kè thay khối hộp bằng cụm shrub organic
-- vài mảng lá vàng/cam gợi cây lộc vừng Hồ Gươm theo mùa
-```
-
-Có thể chỉnh mật độ/hình dáng trong hàm `add_hoan_kiem_lakeside_trees`.
-
-## Bảng Tên, Cây Dày Hơn Và Mặt Nước Quay Lại Bản Cũ
-
-Bản fix mới chỉ sửa các phần được yêu cầu: bảng chữ, đáy/bệ và texture cây. Các phần tháp, nước mặt hồ, đảo cỏ và vật liệu chính được giữ như bản trước.
-
-```text
-- lấy lại kiểu bảng chữ cũ, nhưng đổi chữ thành: THÁP RÙA - HỒ GƯƠM
-- mặt trước bảng có chữ đúng chiều; mặt sau dùng texture trống museum_label_blank_basecolor.png nên không còn chữ bị ngược khi xoay 3D
-- texture bảng chữ mặt trước: museum_label_vi_basecolor.png
-- chân bảng/bệ phụ dùng texture nước thay vì texture đá
-- mặt nước/bệ nước đã quay lại kiểu cũ đã duyệt: dùng water_basecolor.png và water_normal.png, không dùng lớp nước trắng quá trong
-- texture lá cây được làm dày hơn, lá nhỏ/gân lá dày hơn
-- hàng cây ven hồ có thêm lớp cây xen kẽ nhẹ hơn, tán oval mềm hơn để giảm cảm giác thưa/vuông/facet nhưng file không quá nặng
-- các viên đá/đất vuông trên cỏ được thay bằng pebble/boulder bo tròn dùng natural_pebble texture
-- bỏ các mảng xanh lá vuông trên thân tháp
-```
-
-Các hàm chính:
-
-```python
-_add_front_vietnamese_label(scene)
-_add_subtle_lake_display_base(scene)
-_add_natural_island_stones(scene, seed)
-add_hoan_kiem_lakeside_trees(scene, tree_materials, seed=seed)
-```
-
-## Ghi Chú
-
-- Project không cần Blender để generate GLB.
-- File texture đã có sẵn; chỉ cần Pillow nếu muốn chạy lại `scripts/generate_textures.py` để render bảng chữ Unicode.
-- Bảng chữ kiểu cũ nằm ở `assets/textures/thap_rua_ho_guom/museum_label_vi_basecolor.png`; mặt sau trống nằm ở `museum_label_blank_basecolor.png`.
-- Texture trong project là procedural texture tự sinh, không copy ảnh báo/ảnh du lịch vào model.
-- GLB không lưu lại mã nguồn Unity/procedural gốc, nên phần `scenes/thap_rua_ho_guom.py` là bản khôi phục từ dữ liệu mesh/material của GLB rồi nâng cấp texture bằng Python.
-
-
-## Final water revert
-
-- Giữ nguyên cây dày, bảng chữ mặt sau trống và các chỉnh sửa gần nhất.
-- Chỉ quay lại bề mặt nước/bệ nước kiểu cũ đã duyệt: mặt hồ xanh có texture nước rõ hơn, không dùng lớp nước trắng quá trong.
-
-## Curved water underlay fix
-
-- Giữ nguyên bề mặt nước xanh lục như bản đã duyệt.
-- Chỉ đổi phần mảng nước xanh nằm dưới đảo từ hình chữ nhật sang outline cong/méo nhẹ như viền mặt cỏ.
-- Đáy/khối nước dày bên dưới ở bản này đã được trả về footprint vuông/chữ nhật để khớp với nền nước xanh vuông khi nhìn từ dưới.
-- Không chỉnh cây, tháp, đảo, bảng chữ, đá và các texture khác.
-
-## Square transparent underside fix
-
-- Chỉ sửa riêng phần đáy trong suốt/trắng khi nhìn từ dưới.
-- Footprint của đáy nước được trả về hình vuông/chữ nhật khớp với mặt nước xanh gốc: x [-25, 25], z [-19, 19].
-- Giữ nguyên mảng nước xanh cong dưới đảo, cây, bảng chữ, tháp, đảo cỏ, đá và các texture còn lại.
