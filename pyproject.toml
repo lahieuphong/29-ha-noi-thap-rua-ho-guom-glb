@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ha-noi-thap-rua-ho-guom-glb"
+version = "0.1.0"
+description = "Pure Python GLB generator for Thap Rua Ho Guom, Hanoi"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["Pillow>=10.0.0"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
