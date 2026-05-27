@@ -1,4 +1,4 @@
-# 29 Hà Nội - Tháp Rùa Hồ Gươm GLB
+# 29 - Hà Nội - Tháp Rùa Hồ Gươm - GLB
 
 Project Python thuần để tạo file `.glb` cho **Tháp Rùa - Hồ Gươm, Hà Nội**
 
